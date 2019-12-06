@@ -1,10 +1,8 @@
 class HomeController < ApplicationController
-  def index
-    @calc
-  end
+  def index; end
 
   def calc
-    a, b, cmd = params[:a], params[:b], params[:commit]
-    puts a,b,cmd
+    byebug
+    CalcService.new(params[:a], params[:b], params[:commit]).call
   end
 end
