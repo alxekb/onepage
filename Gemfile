@@ -12,6 +12,7 @@ gem 'bootsnap', '>= 1.4.2', require: false
 gem 'draper'
 gem 'slim'
 gem 'bootstrap',  '~>4.3.1'
+gem 'react-rails'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
