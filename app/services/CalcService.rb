@@ -1,22 +1,23 @@
 # frozen_string_literal: true
 
 class CalcService < AbstractService
-  attr_accessor :cmd, :params, :result, :status, :errors
+  attr_accessor :cmd, :user, :params, :result, :status, :errors, :record
 
   COMMANDS = %w[+ - / *].freeze
 
-  def initialize(cmd, params)
-    @cmd = cmd
-    @params = params
+  def initialize(user, command)
+    @user = user
+    @command = command
     @status = :error
     @errors = {}
     @result = nil
+    @record = nil
   end
 
   def call
-    process_data if CalcService::COMMANDS.include? @cmd
-    assign_errors if @result.nil?
-    @status = :success if @errors.blank?
+    process_data if CalcService::COMMANDS.include? @command[:cmd]
+    create_record
+    process_errors
 
     self
   end
@@ -26,30 +27,51 @@ class CalcService < AbstractService
   end
 
   def process_data
-    a, b = assign_params
-    @result = case @cmd
-      when CalcService::COMMANDS[0]
-        a + b
-      when CalcService::COMMANDS[1]
-        a - b
-      when CalcService::COMMANDS[2]
-        a / b
-      when CalcService::COMMANDS[3]
-        a * b
-      else
-        nil
+    a, b, cmd = assign_params(@command)
+    @result = case cmd
+    when CalcService::COMMANDS[0]
+      a + b
+    when CalcService::COMMANDS[1]
+      a - b
+    when CalcService::COMMANDS[2]
+      a / b
+    when CalcService::COMMANDS[3]
+      a * b
+    else
+      nil
+    end
+  end
+
+  def create_record
+    byebug
+    if @errors.blank? && @result.present?
+      record = Record.new(user_id: @user[:id],
+                          result: @result.to_s,
+                          a: @command[:a].to_i,
+                          b: @command[:b].to_i,
+                          cmd: @command[:cmd].to_s)
+
+      if record.valid?
+        record.save!
+        @record = record.id
+      elsif @errors[:record] = record.errors.messages
       end
+    end
+  end
+
+  def process_errors
+    if @result.nil? || @errors.present?
+      @errors[:process] = 'Equation result is nil of error.'
+    elsif (@status = :success)
+    end
   end
 
   private
 
-  def assign_errors
-    @errors[:process] = 'bad request'
-  end
-
-  def assign_params
-    a = @params[:a]
-    b = @params[:b]
-    return a, b
+  def assign_params(command)
+    a = command[:a].to_i
+    b = command[:b].to_i
+    cmd = command[:cmd].to_s
+    [a, b, cmd]
   end
 end
