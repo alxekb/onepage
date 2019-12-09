@@ -26,6 +26,8 @@ class CalcService < AbstractService
     @status == :success
   end
 
+  private
+
   def process_data
     a, b, cmd = assign_params(@command)
     @result = case cmd
@@ -64,8 +66,6 @@ class CalcService < AbstractService
     elsif (@status = :success)
     end
   end
-
-  private
 
   def assign_params(command)
     a = command[:a].to_i
