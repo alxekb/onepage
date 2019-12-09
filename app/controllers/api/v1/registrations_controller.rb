@@ -11,7 +11,8 @@ module Api
           user = User.new(username: params[:username])
           user.save!
           render json: UserSerializer.new(user).serialized_json
-        elsif not_allowed!(message: "Username is present. #{user.errors.full_messages.join(', ')}")
+        elsif not_allowed!(message: I18n.t('username_is_already_present',
+                                           var: user.errors.full_messages.join(', ')))
         end
       end
 

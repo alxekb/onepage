@@ -43,9 +43,8 @@ class CalcService < AbstractService
   end
 
   def create_record
-    byebug
     if @errors.blank? && @result.present?
-      record = Record.new(user_id: @user[:id],
+      record = Record.new(user_id: @user.id,
                           result: @result.to_s,
                           a: @command[:a].to_i,
                           b: @command[:b].to_i,

@@ -9,11 +9,14 @@ module Api
       def equation
         service = CalcService.new(@user, params)
         result = service.call
-        new_record = Record.find_by(id: result.record.id) if result.record.present?
+
+        # The form should be inactive during the data calculation on the server side, i.e.
+        # the user is not allowed to request another calculation if the previous one is not finished
+        new_record = Record.find_by(id: result.record) if result.record.present?
 
         if result.success? && new_record.present?
           render json: RecordDecorator.new(new_record).to_calc
-        elsif bad_request!(message: "Calc service failure. #{ result.errors.flatten }")
+        elsif bad_request!(message: "Calc service failure. #{ result.errors.messages }")
         end
       end
 
