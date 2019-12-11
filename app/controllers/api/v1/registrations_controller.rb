@@ -5,6 +5,7 @@ module Api
     # API endpoint to handle equation requests
     class RegistrationsController < ApiController
       def sign_up
+        puts params
         user = User.new(username: params[:username])
 
         if username_ok?(params[:username]) && user.valid?

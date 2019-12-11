@@ -55,7 +55,8 @@ class CalcService < AbstractService
       if record.valid?
         record.save!
         @record = record.id
-      elsif @errors[:record] = record.errors.messages
+      else
+        @errors[:record] = record.errors.messages
       end
     end
   end
@@ -63,7 +64,8 @@ class CalcService < AbstractService
   def process_errors
     if @result.nil? || @errors.present?
       @errors[:process] = 'Equation result is nil of error.'
-    elsif (@status = :success)
+    else
+      @status = :success
     end
   end
 

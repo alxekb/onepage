@@ -1,9 +1,7 @@
-Rails.application.routes.draw do
-  #use_doorkeeper
-  root 'calc#show'
+# frozen_string_literal: true
 
-  get '/login', to: 'auth#new'
-  post '/login', to: 'auth#create'
+Rails.application.routes.draw do
+  root 'calc#show'
 
   namespace :api do
     namespace :v1 do
@@ -12,4 +10,8 @@ Rails.application.routes.draw do
       post 'sign_up', to: 'registrations#sign_up'
     end
   end
+
+  get '*page', to: 'calc#show', constraints: lambda { |req|
+    !req.xhr? && req.format.html?
+  }
 end

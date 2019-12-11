@@ -22,16 +22,13 @@ RSpec.describe 'Api::V1::Equations', type: :request do
 
   describe 'Invalid data' do
     it 'in case of invalid data' do
-      request_params = { a: 1, b: 2, cmd: '+' }
+      request_params = { a: 1, b: 2 }
 
       post '/api/v1/equation', params: request_params
 
       aggregate_failures 'provided “error” text should be returned' do
-        expect(response).to have_http_status(404)
-        expect(json).to include('error' => {
-                                  'message' => { 'message' => 'Username not found' },
-                                  'status' => 404
-                                })
+        expect(response).to have_http_status(400)
+        expect(json).to include('error')
       end
     end
 

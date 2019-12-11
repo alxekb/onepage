@@ -16,7 +16,8 @@ module Api
 
         if result.success? && new_record.present?
           render json: RecordDecorator.new(new_record).to_calc
-        elsif bad_request!(message: "Calc service failure. #{ result.errors.messages }")
+        else
+          bad_request!(message: "Calc service failure. #{result.errors}")
         end
       end
 
@@ -27,11 +28,11 @@ module Api
       private
 
       def set_account
-        user = User.find_by(username: params[:username])
-        if User.find_by(username: params[:username]).present?
-          @user = User.find_by(username: params[:username])
-        elsif not_found!(message: 'Username not found')
-        end
+        @user = if User.find_by(username: params[:username]).present?
+                  User.find_by(username: params[:username])
+                else
+                  User.create(username: params[:username])
+                end
       end
 
       def equation_params
