@@ -5,7 +5,7 @@ ruby '2.5.3'
 
 gem 'bootsnap', '>= 1.4.2', require: false
 gem 'bootstrap',  '~>4.3.1'
-gem 'doorkeeper', '~> 5.2', '>= 5.2.2'
+gem 'doorkeeper', '~> 5.2'
 gem 'draper', '~> 3.1'
 gem 'faker'
 gem 'fast_jsonapi', '~> 1.5'
